@@ -8,6 +8,21 @@ import CANNON from 'cannon'
  * Debug
  */
 const gui = new dat.GUI()
+const debugObject = {}
+debugObject.createSphere = () => {
+    // This is to place a new ball in the center of the plane, but we want to randomize the placement
+    // createSphere(0.5, {x: 0, y: 3, z: 0})
+
+    createSphere(
+        Math.random() * 0.5,
+        {
+            x: (Math.random() - 0.5) * 3,
+            y: (Math.random() - 0.5) * 10,
+            z: (Math.random() - 0.5) * 3
+        }
+    )
+}
+gui.add(debugObject, 'createSphere')
 
 /**
  * Base
@@ -81,6 +96,9 @@ world.addBody(floorBody)
 /**
  * Test sphere
  */
+// This is the original code but if we want multiple objects, it's easier to create a function to take care of it
+// There's a section below where I do that, therefore keep this code commented out
+
 // const sphere = new THREE.Mesh(
 //     new THREE.SphereGeometry(0.5, 32, 32),
 //     new THREE.MeshStandardMaterial({
@@ -175,6 +193,44 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 /**
+ * Utils
+ */
+const objectsToUpdate = []
+
+const createSphere = (radius, position) => {
+    // three.js mesh
+    const mesh = new THREE.Mesh(
+        new THREE.SphereBufferGeometry(radius, 20, 20),
+        new THREE.MeshStandardMaterial({
+            metalness: 0.3,
+            roughness: 0.4,
+            envMap: environmentMapTexture
+        })
+    )
+    mesh.castShadow = true
+    mesh.position.copy(position)
+    scene.add(mesh)
+
+    // Cannon.js body
+    const shape = new CANNON.Sphere(radius)
+    const body = new CANNON.Body({
+        mass: 1,
+        position: new CANNON.Vec3(0, 3, 0),
+        shape,
+        material: defaultMaterial
+    })
+    body.position.copy(position)
+    world.add(body)
+
+    // save in objectToUpdate
+    objectsToUpdate.push({
+        mesh,
+        body
+    })
+}
+createSphere(0.5, {x: 0, y: 3, z: 0})
+
+/**
  * Animate
  */
 const clock = new THREE.Clock()
@@ -186,10 +242,13 @@ const tick = () =>
     const delta = elapsedTime - oldElapsedTime
     oldElapsedTime = elapsedTime
 
+    world.step(1/60, delta, 3)
+
+    // This is the original code but if we want multiple objects, it's easier to create a function to take care of it
+    // There's a section below where I do that, therefore keep this code commented out
+
     // Update physics world
     // sphereBody.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.position)
-
-    world.step(1/60, delta, 3)
 
     // This updates the three.js sphere coordinates with the Cannon.js world coordinates
     // sphere.position.copy(sphereBody.position)
@@ -198,6 +257,11 @@ const tick = () =>
     // sphere.position.x = sphereBody.position.x
     // sphere.position.y = sphereBody.position.y
     // sphere.position.z = sphereBody.position.z
+
+    // This is the new code that effects the function that creates objects
+    for (const object of objectsToUpdate) {
+        object.mesh.position.copy(object.body.position)
+    }
 
     // Update controls
     controls.update()
