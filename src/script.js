@@ -66,6 +66,10 @@ const environmentMapTexture = cubeTextureLoader.load([
  */
 // World
 const world = new CANNON.World()
+world.broadphase = new CANNON.SAPBroadphase(world)
+world.allowSleep = true
+// you can also control how likely it is for the body to fall asleep with the 
+// sleepSpeedLimit and sleepTimeLimit properties
 world.gravity.set(0, -9.82, 0)
 
 // Materials
