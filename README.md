@@ -1,1 +1,1 @@
-Learning and practicing how to use physics in three.js
+Learning and practicing how to use physics in three.js. There are many 2D and 3D physics libraries, but I want to try to use a 3D library and that one is called Cannon.js (more information about this can be seen at http://schteppe.github.io/cannon.js/docs/).
