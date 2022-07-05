@@ -66,6 +66,7 @@ const sphereBody = new CANNON.Body({
     shape: sphereShape,
     material: defaultMaterial
 })
+sphereBody.applyLocalForce(new CANNON.Vec3(150, 0, 0), new CANNON.Vec3(0, 0, 0))
 world.addBody(sphereBody)
 
 // Floor
@@ -80,18 +81,18 @@ world.addBody(floorBody)
 /**
  * Test sphere
  */
-const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(0.5, 32, 32),
-    new THREE.MeshStandardMaterial({
-        metalness: 0.3,
-        roughness: 0.4,
-        envMap: environmentMapTexture,
-        envMapIntensity: 0.5
-    })
-)
-sphere.castShadow = true
-sphere.position.y = 0.5
-scene.add(sphere)
+// const sphere = new THREE.Mesh(
+//     new THREE.SphereGeometry(0.5, 32, 32),
+//     new THREE.MeshStandardMaterial({
+//         metalness: 0.3,
+//         roughness: 0.4,
+//         envMap: environmentMapTexture,
+//         envMapIntensity: 0.5
+//     })
+// )
+// sphere.castShadow = true
+// sphere.position.y = 0.5
+// scene.add(sphere)
 
 /**
  * Floor
@@ -186,19 +187,17 @@ const tick = () =>
     oldElapsedTime = elapsedTime
 
     // Update physics world
+    // sphereBody.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.position)
+
     world.step(1/60, delta, 3)
 
     // This updates the three.js sphere coordinates with the Cannon.js world coordinates
-    sphere.position.copy(sphereBody.position)
+    // sphere.position.copy(sphereBody.position)
 
     // This is another way to do the same as the code mentioned above
     // sphere.position.x = sphereBody.position.x
     // sphere.position.y = sphereBody.position.y
     // sphere.position.z = sphereBody.position.z
-
-
-
-
 
     // Update controls
     controls.update()
