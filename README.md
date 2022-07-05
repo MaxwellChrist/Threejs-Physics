@@ -1,1 +1,2 @@
-Learning and practicing how to use physics in three.js. There are many 2D and 3D physics libraries, but I want to try to use a 3D library and that one is called Cannon.js (more information about this can be seen at http://schteppe.github.io/cannon.js/docs/).
+Learning and practicing how to use physics in three.js. There are many 2D and 3D physics libraries, but I want to try to use a 3D library and that one is called Cannon.js (more information about this can be seen at http://schteppe.github.io/cannon.js/docs/). I eventually created a box and sphere generator that creates random spheres and boxes to drop from a specific height. When they collide,
+there's an event listener that plays a noise. Also there's a reset feature that resets all spheres and boxes from the scene.
